@@ -3,15 +3,15 @@
 // See the file license.txt for licensing information.
 #include "book/types.h"
 #include "latency/clock_gettime.h"
-#include "simple/simple_order_book.h"
+#include "core/core_order_book.h"
 #include "stdafx.h"
 
 using namespace liquibook;
 using namespace liquibook::book;
 
-typedef simple::SimpleOrderBook<5> FullDepthOrderBook;
-typedef simple::SimpleOrderBook<1> BboOrderBook;
-typedef book::OrderBook<simple::SimpleOrder*> NoDepthOrderBook;
+typedef core::SimpleOrderBook<5> FullDepthOrderBook;
+typedef core::SimpleOrderBook<1> BboOrderBook;
+typedef book::OrderBook<core::SimpleOrder*> NoDepthOrderBook;
 
 void build_histogram(timespec* timestamps, int count) {
   timespec* prev = nullptr;
@@ -78,7 +78,7 @@ int run_test(TypedOrderBook& order_book, TypedOrder** orders,
 template <class TypedOrderBook>
 bool build_and_run_test(uint32_t num_to_try, bool dry_run = false) {
   TypedOrderBook order_book;
-  simple::SimpleOrder** orders = new simple::SimpleOrder*[num_to_try + 1];
+  core::SimpleOrder** orders = new core::SimpleOrder*[num_to_try + 1];
   timespec* timestamps = new timespec[num_to_try + 1];
   
   for (uint32_t i = 0; i < num_to_try; ++i) {
@@ -109,7 +109,7 @@ bool build_and_run_test(uint32_t num_to_try, bool dry_run = false) {
     Price price = (rand() % 10) + delta;
     
     Quantity qty = ((rand() % 10) + 1) * 100;
-    orders[i] = new simple::SimpleOrder(is_buy, price, qty);
+    orders[i] = new core::SimpleOrder(is_buy, price, qty);
   }
   orders[num_to_try] = nullptr; // Final null
   

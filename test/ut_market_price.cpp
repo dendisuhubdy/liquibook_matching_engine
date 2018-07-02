@@ -9,14 +9,14 @@
 #include "unit/changed_checker.h"
 
 #include <book/order_book.h>
-#include <simple/simple_order.h>
+#include <core/core_order.h>
 
 namespace liquibook {
 
 using book::DepthLevel;
 using book::OrderBook;
 using book::OrderTracker;
-using simple::SimpleOrder;
+using core::SimpleOrder;
 
 namespace
 {

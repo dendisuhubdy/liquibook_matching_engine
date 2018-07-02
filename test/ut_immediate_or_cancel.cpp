@@ -9,7 +9,7 @@
 
 namespace liquibook {
 
-using simple::SimpleOrder;
+using core::SimpleOrder;
 typedef FillCheck<SimpleOrder*> SimpleFillCheck;
 
 OrderConditions IOC(oc_immediate_or_cancel);

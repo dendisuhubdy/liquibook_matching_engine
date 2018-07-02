@@ -5,16 +5,16 @@
 
 #include "depth_check.h"
 #include <book/order_book.h>
-#include <simple/simple_order_book.h>
-#include <simple/simple_order.h>
+#include <core/core_order_book.h>
+#include <core/core_order.h>
 
 
 using namespace liquibook::book;
 
 namespace liquibook {
 
-typedef simple::SimpleOrderBook<5> SimpleOrderBook;
-typedef simple::SimpleOrderBook<5>::DepthTracker SimpleDepth;
+typedef core::SimpleOrderBook<5> SimpleOrderBook;
+typedef core::SimpleOrderBook<5>::DepthTracker SimpleDepth;
 
 template <class OrderBook, class OrderPtr>
 bool add_and_verify(OrderBook& order_book,
@@ -27,13 +27,13 @@ bool add_and_verify(OrderBook& order_book,
   if (matched == match_expected) {
     if (complete_expected) {
       // State should be complete
-      return simple::os_complete == order->state();
+      return core::os_complete == order->state();
     } else if (conditions & oc_immediate_or_cancel) {
       // State should be cancelled
-      return simple::os_cancelled == order->state();
+      return core::os_cancelled == order->state();
     } else {
       // State should be accepted
-      return simple::os_accepted == order->state();
+      return core::os_accepted == order->state();
     }
   } else {
     return false;
@@ -44,7 +44,7 @@ bool add_and_verify(OrderBook& order_book,
 template <class OrderBook, class OrderPtr>
 bool cancel_and_verify(OrderBook& order_book,
                        const OrderPtr& order,
-                       simple::OrderState expected_state)
+                       core::OrderState expected_state)
 {
   order_book.cancel(order);
   return expected_state == order->state();
@@ -55,7 +55,7 @@ bool replace_and_verify(OrderBook& order_book,
                         const OrderPtr& order,
                         int32_t size_change,
                         Price new_price = PRICE_UNCHANGED,
-                        simple::OrderState expected_state = simple::os_accepted,
+                        core::OrderState expected_state = core::os_accepted,
                         Quantity match_qty = 0)
 {
   // Calculate
@@ -131,21 +131,21 @@ public:
       throw std::runtime_error("Unexpected filled cost");
     }
     // If the order was filled, and is not complete
-    if (order_->state() != simple::os_complete && !expected_open_qty_) {
+    if (order_->state() != core::os_complete && !expected_open_qty_) {
       std::cout << "state " << order_->state() 
-                << " expected " << simple::os_complete << std::endl;
+                << " expected " << core::os_complete << std::endl;
       throw std::runtime_error("Unexpected state with no open quantity");
     // Else If the order was not filled
     } else if (expected_open_qty_) {
       bool IOC = ((conditions_ & oc_immediate_or_cancel) != 0);
-      if (order_->state() != simple::os_accepted && !IOC) {
+      if (order_->state() != core::os_accepted && !IOC) {
         std::cout << "state " << order_->state() 
-                  << " expected " << simple::os_accepted << std::endl;
+                  << " expected " << core::os_accepted << std::endl;
         throw std::runtime_error("Unexpected state with open quantity");
       }
-      if (order_->state() != simple::os_cancelled && IOC) {
+      if (order_->state() != core::os_cancelled && IOC) {
         std::cout << "state " << order_->state() 
-                  << " expected " << simple::os_cancelled << std::endl;
+                  << " expected " << core::os_cancelled << std::endl;
         throw std::runtime_error("Unexpected state for IOC with open quantity");
       }
     } 
